@@ -3,10 +3,8 @@ package nl.tudelft.instrumentation.branch;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
-import nl.tudelft.instrumentation.line.LineCoverageVisitor;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
 import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

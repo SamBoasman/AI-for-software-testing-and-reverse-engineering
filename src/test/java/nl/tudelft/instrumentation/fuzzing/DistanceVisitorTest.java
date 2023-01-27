@@ -2,7 +2,6 @@ package nl.tudelft.instrumentation.fuzzing;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
-import nl.tudelft.instrumentation.branch.BranchCoverageVisitor;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 

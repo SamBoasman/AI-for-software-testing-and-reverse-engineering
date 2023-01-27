@@ -2,13 +2,8 @@ package nl.tudelft.instrumentation.symbolic;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.util.*;
 import com.microsoft.z3.*;
-import org.apache.xpath.operations.Bool;
-import nl.tudelft.instrumentation.fuzzing.DistanceTracker;
-import nl.tudelft.instrumentation.fuzzing.FuzzingLab;
-
 import java.util.Random;
 import java.io.FileWriter;
 import java.io.IOException;
