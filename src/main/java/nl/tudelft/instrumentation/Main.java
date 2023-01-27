@@ -28,7 +28,6 @@ public class Main {
 
     // Instrumentation
     unit.accept(visitor, null);
-    System.out.println(unit.toString());
     return unit.toString();
   }
 }
