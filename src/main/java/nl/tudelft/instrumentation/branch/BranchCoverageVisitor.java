@@ -1,6 +1,5 @@
 package nl.tudelft.instrumentation.branch;
 
-import com.github.javaparser.Position;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
@@ -8,18 +7,13 @@ import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
 import com.github.javaparser.ast.stmt.*;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.VoidType;
 import com.github.javaparser.ast.visitor.ModifierVisitor;
-import nl.tudelft.instrumentation.line.LineCoverageTracker;
 import java.io.File;
-import java.nio.file.Path;
-import java.util.EnumSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * This class implements a small line-coverage instrumentation tool. It relies on {@code JavaParser}
@@ -223,19 +217,38 @@ public class BranchCoverageVisitor extends ModifierVisitor<Object> {
       AssignExpr assign = (AssignExpr) parent;
       NameExpr name = (NameExpr) assign.getTarget();
 
-      // Option 1: the variable is one of the method attributes
-      MethodDeclaration method = expr.findAncestor(MethodDeclaration.class).get();
-      Optional<Parameter> parameter = method.getParameterByName(name.getName().getIdentifier());
-      if (parameter.isPresent()) {
+      try {
+        // Option 1: the variable is one of the method attributes
+        MethodDeclaration method = expr.findAncestor(MethodDeclaration.class).get();
+        Optional<Parameter> parameter = method.getParameterByName(name.getName().getIdentifier());
+        if (parameter.isPresent()) {
 
-        return new VoidType();
-      }
+          return new VoidType();
+        }
 
-      // Option 2: the variable is declared within the method body
-      List<VariableDeclarator> list = method.findAll(VariableDeclarator.class);
-      for (VariableDeclarator declaration : list) {
-        if (declaration.getName().getIdentifier().equals(name.getName().getIdentifier()))
-          return declaration.getType();
+        // Option 2: the variable is declared within the method body
+        List<VariableDeclarator> list = method.findAll(VariableDeclarator.class);
+        for (VariableDeclarator declaration : list) {
+          if (declaration.getName().getIdentifier().equals(name.getName().getIdentifier()))
+            return declaration.getType();
+        }
+      } catch (NoSuchElementException e) {
+        // Option 1b: the variable is one of the constructor attributes
+        ConstructorDeclaration constructor = expr.findAncestor(ConstructorDeclaration.class).get();
+        Optional<Parameter> parameter =
+            constructor.getParameterByName(name.getName().getIdentifier());
+        if (parameter.isPresent()) {
+
+          return new VoidType();
+        }
+
+        // Option 2b: the variable is declared within the constructor body
+        List<VariableDeclarator> list = constructor.findAll(VariableDeclarator.class);
+        for (VariableDeclarator declaration : list) {
+          if (declaration.getName().getIdentifier().equals(name.getName().getIdentifier())) {
+            return declaration.getType();
+          }
+        }
       }
 
       // Option 3: the used variable is one of the class attributes
@@ -273,7 +286,7 @@ public class BranchCoverageVisitor extends ModifierVisitor<Object> {
     MethodCallExpr call = new MethodCallExpr(coverageTracker, "updateCoverage");
 
     if (File.separator.equals("\\")) {
-      filename = filename.replace("\\", "/");
+      filename = filename.replace("\\", "\\\\");
     } else {
       filename = filename.replace("\\", File.separator);
     }
