@@ -280,10 +280,9 @@ public class BranchCoverageVisitor extends ModifierVisitor<Object> {
     // register new line to keep track of
     BranchCoverageTracker.registerLine(filename, line, branch);
 
-    // create a method call to LineCoverageTracker
-    NameExpr coverageTracker =
-        new NameExpr("nl.tudelft.instrumentation.branch.BranchCoverageTracker");
-    MethodCallExpr call = new MethodCallExpr(coverageTracker, "updateCoverage");
+    // create a method call to Tester update
+    NameExpr coverageTracker = new NameExpr("nz.ac.auckland.clitest.CliTest");
+    MethodCallExpr call = new MethodCallExpr(coverageTracker, "addCoverage");
 
     if (File.separator.equals("\\")) {
       filename = filename.replace("\\", "\\\\");

@@ -5,6 +5,8 @@ import com.google.gson.JsonPrimitive;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class collects coverage data (gathered by {@code CoverageVisitor}) and stores them in a
@@ -46,7 +48,7 @@ public class BranchCoverageTracker {
    * This method register a new entry for the Json file ({@code JsonObject})
    *
    * @param filename name of the Java file under analysis
-   * @param line line of teh file to register for coverage
+   * @param line line of the file to register for coverage
    */
   public static void registerLine(String filename, int line, boolean branch) {
     if (!coveredBranches.has(filename)) {
@@ -69,6 +71,7 @@ public class BranchCoverageTracker {
     }
     JsonObject file = (JsonObject) coveredBranches.get(filename);
     file.add(line + "_" + branch, new JsonPrimitive("true"));
+
   }
 
   /**
@@ -79,7 +82,8 @@ public class BranchCoverageTracker {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        writeCoverageToFile();
+        if (coveredBranches != null)
+          writeCoverageToFile();
       }
     });
   }
