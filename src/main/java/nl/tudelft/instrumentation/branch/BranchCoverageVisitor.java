@@ -281,7 +281,7 @@ public class BranchCoverageVisitor extends ModifierVisitor<Object> {
     BranchCoverageTracker.registerLine(filename, line, branch);
 
     // create a method call to Tester update
-    NameExpr coverageTracker = new NameExpr("nz.ac.auckland.clitest.CliTest");
+    NameExpr coverageTracker = new NameExpr("code.performancemap.PerformanceMap");
     MethodCallExpr call = new MethodCallExpr(coverageTracker, "addCoverage");
 
     if (File.separator.equals("\\")) {
