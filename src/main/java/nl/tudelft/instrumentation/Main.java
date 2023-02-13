@@ -11,23 +11,23 @@ import java.io.FileReader;
 
 public class Main {
 
-    protected static File file;
-    protected static CompilationUnit unit;
+  protected static File file;
+  protected static CompilationUnit unit;
 
-    public static void main(String[] args) throws FileNotFoundException {
-        // parse command line
-        CommandLineParser command = new CommandLineParser();
-        command.parseCommandLine(args);
-        GenericVisitor visitor = command.getVisitor();
-        file = command.getJavaFile();
+  public static String main(String[] args) throws FileNotFoundException {
+    // parse command line
+    CommandLineParser command = new CommandLineParser();
+    command.parseCommandLine(args);
+    GenericVisitor visitor = command.getVisitor();
+    file = command.getJavaFile();
 
-        // parse the Java file
-        JavaParser parser = new JavaParser();
-        ParseResult<CompilationUnit> results = parser.parse(new FileReader(file));
-        unit = results.getResult().get();
+    // parse the Java file
+    JavaParser parser = new JavaParser();
+    ParseResult<CompilationUnit> results = parser.parse(new FileReader(file));
+    unit = results.getResult().get();
 
-        // Instrumentation
-        unit.accept(visitor, null);
-        System.out.println(unit.toString());
-    }
+    // Instrumentation
+    unit.accept(visitor, null);
+    return unit.toString();
+  }
 }
